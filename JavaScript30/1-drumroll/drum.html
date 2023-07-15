@@ -1,0 +1,59 @@
+<html>
+	<link rel="stylesheet" href="style.css">
+	<body>
+		<span class="my-title">Press a key or click on the button to make a sound!</span>
+		<div class="keys">
+			<div data-key="65" class="key button-27" onclick="clicked(this)">
+				<kbd>A</kbd>
+				<span class="sound">clap</span>
+			</div>
+			<div data-key="83" class="key" onclick="clicked(this)">
+				<kbd>S</kbd>
+				<span class="sound">hithat</span>
+			</div>
+			<div data-key="68" class="key" onclick="clicked(this)">
+				<kbd>D</kbd>
+				<span class="sound">kick</span>
+			</div>
+			<div data-key="70" class="key" onclick="clicked(this)">
+				<kbd>F</kbd>
+				<span class="sound">openhat</span>
+			</div>
+		</div>
+	</body>
+
+	<audio data-key="65" src="sounds/clap.wav"></audio>
+	<audio data-key="83" src="sounds/hihat.wav"></audio>
+	<audio data-key="68" src="sounds/kick.wav"></audio>
+	<audio data-key="70" src="sounds/openhat.wav"></audio>
+	<script>
+		function clicked(e){
+			let keyCode = e.getAttribute('data-key');
+			const audio = document.querySelector(`audio[data-key='${keyCode}']`);
+			playSound(keyCode);
+		}
+		function keypressed(e){
+			let keyCode = e.keyCode;
+			const audio = document.querySelector(`audio[data-key='${keyCode}']`);
+			playSound(keyCode);
+		}
+
+		function playSound(keyCode){
+			const audio = document.querySelector(`audio[data-key='${keyCode}']`);
+			const key = document.querySelector(`.key[data-key='${keyCode}'`);
+			if (!audio) return; // stop parsing if key not associated
+			audio.currentTime = 0; // rewind to start so it can play in a loop
+			audio.play();
+			key.classList.add('playing');
+		}
+
+		function removeTransition(e){
+			if(e.propertyName !== 'transform') return; 
+			this.classList.remove('playing');
+		}
+
+		const keys = document.querySelectorAll('.key');
+		keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+		window.addEventListener('keydown', keypressed);
+	</script>
+</html>
